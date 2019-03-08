@@ -34,10 +34,6 @@ function tamper_header_listener(e) {
 		});
 	
 });
-
-
-
-//});
 }
 
 function tamper_request_listener(e){
@@ -57,17 +53,9 @@ function tamper_request_listener(e){
 			type: e.type,
 			body: body
 		};
-//		user_modify_body(data).then(res=>{
-//			if(res.stop) stop_tampering();
-//			if(res.cancel) return done({cancel: true});
-//			if(res.redirect) return done({redirectUrl: res.redirect});
-//			done(e);
-//		});i
-//var bodydata = JSON.parse(data);
 data.body.forEach(body=>{
 console.log(body.value);
 });
-//return done({redirectUrl: res.redirect});
 done(e);
 	});
 
@@ -97,7 +85,7 @@ function start_tamper_listener(){
 function user_confirm_tamper(){
 	return new Promise(done=>{
 		browser.windows.create({
-			url: "popups/confirm_tamper/popup.html",
+			url: "confirm_tamper/popup.html",
 			type: "panel",
 			allowScriptsToClose: true
 		}).then(w=>{
@@ -119,8 +107,6 @@ function user_modify_headers(data){
 		browser.windows.create({
 			url: "headers.html?"+encodeURIComponent(JSON.stringify(data)),
 			type: "panel",
-			width: 375,
-			height: 525,
 			allowScriptsToClose: true
 		}).then(w=>{
 			msgHandler = msg=>{
@@ -131,39 +117,9 @@ function user_modify_headers(data){
 			};
 		});
 	});
-
-/*
-var headerdata = JSON.parse(decodeURIComponent(data));
-headerdata.header.forEach(header=>{
-console.log(header.name)
-});
-*/
 }
 
 function user_modify_body(data){
-/*
-	return new Promise(done=>{
-		browser.windows.create({
-			url: "popup.html?"+encodeURIComponent(JSON.stringify(data)),
-			type: "panel",
-			width: 375,
-			height: 525,
-			allowScriptsToClose: true
-		}).then(w=>{
-			msgHandler = msg=>{
-				browser.windows.getCurrent().then(wi=>{
-					browser.windows.remove(wi.id);
-					done(msg);
-				});
-			};
-		});
-	});
-var bodydata = JSON.parse(decodeURIComponent(data));
-bodydata.body.forEach(body=>{
-console.log(body.name)
-});
-
-*/
 }
 
 function confirm_and_start_tamper(){

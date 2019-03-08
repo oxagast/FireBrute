@@ -1,7 +1,5 @@
-
 document.getElementById("n").onclick = ()=>respond(false);
 document.getElementById("y").onclick = ()=>respond(true);
-
 function respond(r) {
 	var types = [];
 	Array.from(document.querySelectorAll(".types")).forEach(inp=>{

@@ -1,0 +1,47 @@
+<html>
+<head>
+</head>
+<body>
+<center>
+<p>Listen for type</p>
+<table class='paleBlueRows'>
+<thead>
+<tr>
+<th>Type of POST</th><th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<label><input class='types' type="checkbox" value="main_frame" checked>&nbsp;main_frame</label>
+</td>
+<td>
+Top-level documents loaded into a tab.
+</td>
+</tr>
+<tr>
+<td>
+<label><input class='types' type="checkbox" value="object_subrequest">&nbsp;object_subrequest</label>
+</td>
+<td>
+Object Requests
+</td>
+</tr>
+<td>
+<label><input class='types' type="checkbox" value="xmlhttprequest" checked>&nbsp;xmlhttprequest</label>
+</td>
+<td>
+Requests sent by an XMLHttpRequest object or through the Fetch API.
+</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<label>Tamper with requests who's URL matches: <input value='(.*?)' id='matchregex'> </label>
+<br>
+<p>Start Firebrute Listener?</p>
+<button id="y" class="myButton">Yes</button>&nbsp;<button id="n" class="myButton">No, Cancel</button>
+</center>
+<script src="popup.js"></script>
+</body>
+</html>

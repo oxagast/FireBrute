@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Start Firebrute</title>
+		<meta charset="UTF-8">
+
+  <p>Listen for types</p>
+                        <table class='paleBlueRows'>
+                        <thead>
+			<tr>
+		        <th>Type</th><th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                        <td>
+                        <label><input class='types' type="checkbox" value="beacon">&nbsp;beacon</label>
+                        </td><td>
+                        Requests sent through the Beacon API.
+                        </td>
+                        </tr>
+			<label>Crack URL who's regex matches: <input value='(.*?)' id='matchregex'> </label>
+			<br>
+			<p>Start Firebrute</p>
+			<button id="y" class="myButton">Yes</button>&nbsp;<button id="n" class="myButton">No, Cancel</button>
+		</center>
+		<script src="popup.js"></script>
+	</body>
+</html>
