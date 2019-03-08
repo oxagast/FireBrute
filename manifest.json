@@ -1,0 +1,41 @@
+{
+
+	"description": "Firebrute brute forces forms.",
+	"manifest_version": 2,
+	"name": "FireBrute for FF Quantum",
+	"author": "Pamblam",
+	"version": "0.3",
+	"short_name": "Firebrute",
+	
+	"icons": {
+		"48": "icons/icon-tamper-48.png",
+		"32": "icons/icon-tamper-32.png",
+		"16": "icons/icon-tamper-16.png"
+	},
+
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"<all_urls>"
+	],
+
+	"background": {
+		"scripts": ["background.js"]
+	},
+	
+	"browser_action": {
+		"default_icon": {
+			"48": "icons/icon-notamper-48.png",
+			"32": "icons/icon-notamper-32.png",
+			"16": "icons/icon-notamper-16.png"
+		}
+	},
+
+	"developer": {
+		"name": "oxagast",
+		"url": "https://maskster.site"
+	}
+	
+
+
+}
