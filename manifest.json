@@ -1,10 +1,10 @@
 {
 
-	"description": "Firebrute brute forces forms.",
+	"description": "FireBrute brute forces forms.",
 	"manifest_version": 2,
-	"name": "FireBrute for FF Quantum",
-	"author": "Pamblam",
-	"version": "0.3",
+	"name": "FireBrute",
+	"author": "oxagast",
+	"version": "0.1",
 	"short_name": "Firebrute",
 	
 	"icons": {

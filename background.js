@@ -32,7 +32,6 @@ function tamper_header_listener(e) {
 			if(res.stop) stop_tampering();
 			done({requestHeaders: res.headers});
 		});
-	
 });
 }
 
@@ -85,7 +84,7 @@ function start_tamper_listener(){
 function user_confirm_tamper(){
 	return new Promise(done=>{
 		browser.windows.create({
-			url: "confirm_tamper/popup.html",
+			url: "popup.html",
 			type: "panel",
 			allowScriptsToClose: true
 		}).then(w=>{
