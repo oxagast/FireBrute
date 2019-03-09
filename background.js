@@ -28,10 +28,11 @@ function tamper_header_listener(e) {
 				value: header.value
 			});
 		});
-		user_modify_headers(data).then(res=>{
-			if(res.stop) stop_tampering();
-			done({requestHeaders: res.headers});
-		});
+	//	user_modify_headers(data).then(res=>{
+	//		if(res.stop) stop_tampering();
+	//		done({requestHeaders: res.headers});
+	//	});
+done({requestHeaders: data.headers});
 });
 }
 
@@ -52,9 +53,22 @@ function tamper_request_listener(e){
 			type: e.type,
 			body: body
 		};
+var un_f;
+var pw_f;
 data.body.forEach(body=>{
-console.log(body.value);
+if(body.value === "USERNAME") {
+un_f = body.name;
+console.log("Username Feild: " + un_f);
+}
+if(body.value === "PASSWORD") {
+pw_f = body.name;
+console.log("Pass Feild: " + pw_f);
+}
+else {
+console.log("Other param: " + body.name);
+}
 });
+
 done(e);
 	});
 
