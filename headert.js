@@ -21,9 +21,7 @@ data.headers.forEach(header=>{
 	row.appendChild(td2);
 	tbody.appendChild(row);
 });
-//okFunc();
 //document.getElementById('ok').onclick = function(){
-//function okFunc() {
 	var headers = [];
 	Array.from(document.querySelectorAll(".headers")).forEach(inp=>{
 		headers.push({
@@ -34,6 +32,7 @@ data.headers.forEach(header=>{
 	browser.runtime.sendMessage({
 		headers: headers
 	});
+window.close();
 //};
 /*
 document.getElementById('stop').onclick = function(){
