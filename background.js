@@ -3,6 +3,7 @@ var windowopen = false;
 var types = [];
 var pattern = false;
 var failpattern;
+var crackuser;
 var msgHandler = ()=>{};
 function handleMessage(msg){
 	msgHandler(msg);
@@ -54,11 +55,11 @@ var un_f;
 var pw_f;
 var badpasserror = failpattern;
 data.body.forEach(body=>{
-if(body.value === "USERNAME") {
+if(body.value === "UN") {
 un_f = body.name;
 console.log("Username Feild: " + un_f);
 }
-if(body.value === "PASSWORD") {
+if(body.value === "PW") {
 pw_f = body.name;
 console.log("Pass Feild: " + pw_f);
 }
@@ -70,7 +71,7 @@ console.log(e.originUrl);
 var xhr = new XMLHttpRequest();
 xhr.open("POST", e.originUrl, true);
 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.send(un_f + "=admin&" + pw_f + "=abc");
+xhr.send(un_f + "=" + crackuser + "&" + pw_f + "=abc");
 //console.log("Response: ");
 xhr.onload = function() {
 var databack = this.responseText;
@@ -123,6 +124,7 @@ function user_confirm_tamper(){
 				types = msg.types;
 				pattern = msg.docpattern;
                                 failpattern = msg.failpattern;
+                                crackuser = msg.crackuser;
 				browser.windows.getCurrent().then(wi=>{
 					browser.windows.remove(wi.id);
 					done(msg);
@@ -175,7 +177,7 @@ function stop_tampering(){
 		path: {
 			"48": "icons/icon-notamper-48.png",
 			"32": "icons/icon-notamper-32.png",
-			"16": "icons/icon-notamper-16.png"
+ 			"16": "icons/icon-notamper-16.png"
 		}
 	});
 	stop_tamper_listener();

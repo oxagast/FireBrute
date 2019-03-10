@@ -9,7 +9,8 @@ function respond(r) {
 		tamper: r,
 		types: types,
 		docpattern: document.getElementById("matchregexdoc").value,
-                failpattern: document.getElementById("matchregexfail").value
+                failpattern: document.getElementById("matchregexfail").value,
+                crackuser: document.getElementById("crackuser").value
 	});
 }
 
