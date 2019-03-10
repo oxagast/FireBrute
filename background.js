@@ -161,9 +161,9 @@ function confirm_and_start_tamper(){
 			isTampering = true;
 			browser.browserAction.setIcon({
 				path: {
-					"48": "icons/icon-tamper-48.png",
-					"32": "icons/icon-tamper-32.png",
-					"16": "icons/icon-tamper-16.png"
+					"48": "images/crackedegg.png",
+					"32": "images/crackedegg.png",
+					"16": "images/crackedegg.png"
 				}
 			});
 			start_tamper_listener();
@@ -175,9 +175,9 @@ function stop_tampering(){
 	isTampering = false;
 	browser.browserAction.setIcon({
 		path: {
-			"48": "icons/icon-notamper-48.png",
-			"32": "icons/icon-notamper-32.png",
- 			"16": "icons/icon-notamper-16.png"
+			"48": "images/wholeegg.png",
+			"32": "images/wholeegg.png",
+ 			"16": "images/wholeegg.png"
 		}
 	});
 	stop_tamper_listener();
