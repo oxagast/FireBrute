@@ -1,8 +1,8 @@
-var isTampering = true;
+var isTampering = false;
 var windowopen = false;
 var types = [];
 var pattern = false;
-
+var failpattern;
 var msgHandler = ()=>{};
 function handleMessage(msg){
 	msgHandler(msg);
@@ -52,7 +52,7 @@ function tamper_request_listener(e){
 done(e);
 var un_f;
 var pw_f;
-var badpasserror = /failed/;
+var badpasserror = failpattern;
 data.body.forEach(body=>{
 if(body.value === "USERNAME") {
 un_f = body.name;
@@ -79,10 +79,10 @@ var databack = this.responseText;
 if (databack.length < 5) {
  console.log("Error short page.");
 }
-else if((badpasserror.test(databack) == false) && (databack.length > 5)) {
+else if((databack.match(RegExp(badpasserror), "gi") != null) && (databack.length > 5)) {
   console.log("Bad password");
 }
-else if((badpasserror.test(databack) == true) && (databack.length > 5)) {
+else if((databack.match(RegExp(badpasserror), "gi") === null) && (databack.length > 5)) {
 console.log("Broke");
 }
 }
@@ -121,7 +121,8 @@ function user_confirm_tamper(){
 		}).then(w=>{
 			msgHandler = msg=>{
 				types = msg.types;
-				pattern = msg.pattern;
+				pattern = msg.docpattern;
+                                failpattern = msg.failpattern;
 				browser.windows.getCurrent().then(wi=>{
 					browser.windows.remove(wi.id);
 					done(msg);
@@ -186,4 +187,3 @@ browser.browserAction.onClicked.addListener(()=>{
 	else stop_tampering();
 });
 
-start_tamper_listener();

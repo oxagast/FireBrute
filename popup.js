@@ -8,7 +8,8 @@ function respond(r) {
 	browser.runtime.sendMessage({
 		tamper: r,
 		types: types,
-		pattern: document.getElementById("matchregex").value
+		docpattern: document.getElementById("matchregexdoc").value,
+                failpattern: document.getElementById("matchregexfail").value
 	});
 }
 
