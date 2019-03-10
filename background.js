@@ -28,10 +28,6 @@ function tamper_header_listener(e) {
 				value: header.value
 			});
 		});
-	//	user_modify_headers(data).then(res=>{
-	//		if(res.stop) stop_tampering();
-	//		done({requestHeaders: res.headers});
-	//	});
 done({requestHeaders: data.headers});
 });
 }
@@ -53,8 +49,10 @@ function tamper_request_listener(e){
 			type: e.type,
 			body: body
 		};
+done(e);
 var un_f;
 var pw_f;
+var badpasserror = /failed/;
 data.body.forEach(body=>{
 if(body.value === "USERNAME") {
 un_f = body.name;
@@ -68,9 +66,28 @@ else {
 console.log("Other param: " + body.name);
 }
 });
+console.log(e.originUrl);
+var xhr = new XMLHttpRequest();
+xhr.open("POST", e.originUrl, true);
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.send(un_f + "=admin&" + pw_f + "=abc");
+//console.log("Response: ");
+xhr.onload = function() {
+var databack = this.responseText;
+//var data = JSON.parse(this.responseText);
+//console.log(data);
+if (databack.length < 5) {
+ console.log("Error short page.");
+}
+else if((badpasserror.test(databack) == false) && (databack.length > 5)) {
+  console.log("Bad password");
+}
+else if((badpasserror.test(databack) == true) && (databack.length > 5)) {
+console.log("Broke");
+}
+}
 
-done(e);
-	});
+});
 
 }
 
