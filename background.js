@@ -1,4 +1,4 @@
-var isTampering = false;
+var isCracking = false;
 var windowopen = false;
 var types = [];
 var pattern = false;
@@ -12,7 +12,7 @@ function handleMessage(msg){
 
 
 
-function tamper_header_listener(e) {
+function cracking_header_listener(e) {
 	if((e.originUrl || "").indexOf("moz-extension://") === 0) return e;
 	if(!~types.indexOf(e.type)) return e;
 	if(pattern && null === e.url.match(RegExp(pattern, "g"))) return e;
@@ -33,7 +33,7 @@ done({requestHeaders: data.headers});
 });
 }
 
-function tamper_request_listener(e){
+function cracking_request_listener(e){
 	if((e.originUrl || "").indexOf("moz-extension://") === 0) return e;
 	if(!~types.indexOf(e.type)) return e;
 	if(pattern && null === e.url.match(RegExp(pattern, "g"))) return e;
@@ -94,28 +94,28 @@ console.log("Trying: " + wordbyline[iter]);
 });
 }
 
-function stop_tamper_listener(){
-	var listening = browser.webRequest.onBeforeSendHeaders.hasListener(tamper_header_listener);
+function stop_cracking_listener(){
+	var listening = browser.webRequest.onBeforeSendHeaders.hasListener(cracking_header_listener);
 	if(listening){
-		browser.webRequest.onBeforeSendHeaders.removeListener(tamper_header_listener);
-		browser.webRequest.onBeforeRequest.removeListener(tamper_request_listener);
+		browser.webRequest.onBeforeSendHeaders.removeListener(cracking_header_listener);
+		browser.webRequest.onBeforeRequest.removeListener(cracking_request_listener);
 	}
 }
 
-function start_tamper_listener(){
+function start_cracking_listener(){
 	browser.webRequest.onBeforeSendHeaders.addListener(
-		tamper_header_listener,
+		cracking_header_listener,
 		{urls: ["<all_urls>"]},
 		["blocking", "requestHeaders"]
 	);
 	browser.webRequest.onBeforeRequest.addListener(
-		tamper_request_listener,
+		cracking_request_listener,
 		{urls: ["<all_urls>"]},
 		["blocking", "requestBody"]
 	);
 }
 
-function user_confirm_tamper(){
+function user_confirm_cracking(){
 return new Promise(done=>{
 		browser.windows.create({
 			url: "popup.html",
@@ -158,10 +158,10 @@ function user_modify_headers(data){
 function user_modify_body(data){
 }
 
-function confirm_and_start_tamper(){
-	user_confirm_tamper().then(res=>{
+function confirm_and_start_cracking(){
+	user_confirm_cracking().then(res=>{
 		if(res.tamper === true){
-			isTampering = true;
+			isCracking = true;
 			browser.browserAction.setIcon({
 				path: {
 					"48": "images/crackedegg.png",
@@ -169,13 +169,13 @@ function confirm_and_start_tamper(){
 					"16": "images/crackedegg.png"
 				}
 			});
-			start_tamper_listener();
+			start_cracking_listener();
 		}
 	});
 }
 
-function stop_tampering(){
-	isTampering = false;
+function stop_cracking(){
+	isCracking = false;
 	browser.browserAction.setIcon({
 		path: {
 			"48": "images/wholeegg.png",
@@ -183,12 +183,12 @@ function stop_tampering(){
  			"16": "images/wholeegg.png"
 		}
 	});
-	stop_tamper_listener();
+	stop_cracking_listener();
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
 browser.browserAction.onClicked.addListener(()=>{
-	if(!isTampering) confirm_and_start_tamper();
-	else stop_tampering();
+	if(!isCracking) confirm_and_start_cracking();
+	else stop_cracking();
 });
 
