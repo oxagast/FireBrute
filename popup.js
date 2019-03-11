@@ -1,6 +1,7 @@
 document.getElementById("n").onclick = ()=>respond(false);
 document.getElementById("y").onclick = ()=>respond(true);
 var wordlistfile;
+
 function respond(r) {
 	var types = [];
 	Array.from(document.querySelectorAll(".types")).forEach(inp=>{
@@ -29,14 +30,7 @@ function readSingleFile(e) {
   };
   reader.readAsText(file);
 }
-/*
-function displayContents(contents) {
-  var element = document.getElementById('file-content');
-  element.textContent = contents;
-  wordlistfile = element.textContent;
-  console.log(wordlistfile);
-}
-*/
+
 document.getElementById('file-input').addEventListener('change', readSingleFile, false);
 
 function firefox57_workaround_for_blank_panel() {
