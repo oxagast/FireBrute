@@ -93,13 +93,11 @@ function cracking_request_listener(e) {
         }
       }
       if(cracked = true) {
-        console.log("Broke with Username: " + crackuser);
-        console.log("Password: " + wordbyline[iter]);
         stop_cracking_listener();
         break;
       }
-  //    console.log("Trying: " + wordbyline[iter]);
     }
+    console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
   });
 }
 
