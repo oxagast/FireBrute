@@ -76,8 +76,15 @@ function crack_it(e) {
     }
   }
   if(cracked == true) {
-    console.log("Username: " + crackuser + " Password: " + wordbyline[iter]);
-    stop_cracking();
+  return new Promise(done => {
+    browser.windows.create({
+      url: "cracked.html",
+      type: "panel"
+    }).then(w => {
+      document.write("<script>alert('" + wordbyline[iter] + "');</script>");
+      });
+    });
+ stop_cracking();
   }
   else {
     console.log("Sorry, couldn't crack with this wordlist");
