@@ -66,7 +66,7 @@ function crack_it(e) {
       if(databack.length < 5) {
         console.log("Error short page.");
       } else if((databack.match(RegExp(failpattern), "gi") != null) && (databack.length > 5)) {
-        console.log("Bad password");
+        console.log("Bad password" + wordybline[iter]);
       } else if((databack.match(RegExp(failpattern), "gi") == null) && (databack.length > 5)) {
         cracked = true;
       }
@@ -78,10 +78,9 @@ function crack_it(e) {
   if(cracked == true) {
   return new Promise(done => {
     browser.windows.create({
-      url: "cracked.html",
+      url: "cracked.html?login=" + crackuser + "&password=" + wordbyline[iter],
       type: "panel"
     }).then(w => {
-      document.write("<script>alert('" + wordbyline[iter] + "');</script>");
       });
     });
  stop_cracking();
