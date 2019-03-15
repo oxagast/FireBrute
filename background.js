@@ -42,15 +42,14 @@ function crack_it(e) {
   var iter;
   var ops = "";
   pagedata.body.forEach(body => {
-    if(body.value == "UN") {
+    if(body.value == crackuser) {
       un_f = body.name;
     }
     if(body.value == "PW") {
       pw_f = body.name;
-    } else {
-      if ((body.value != "PW") && (body.value != "UN")) {
-        ops = ops.concat(body.name, "=", body.value, "&");
-      }
+    } 
+    if ((body.value != "PW") && (body.value != crackuser)) {
+      ops = ops.concat(body.name, "=", body.value, "&");
     }
   });
   var wordbyline = wordlist.split("\n");
@@ -65,9 +64,8 @@ function crack_it(e) {
       var databack = this.responseText;
       if(databack.length < 5) {
         console.log("Error short page.");
-      } else if((databack.match(RegExp(failpattern), "gi") != null) && (databack.length > 5)) {
-        console.log("Bad password" + wordybline[iter]);
-      } else if((databack.match(RegExp(failpattern), "gi") == null) && (databack.length > 5)) {
+      }
+      else if((databack.match(RegExp(failpattern), "gi") == null) && (databack.length > 10)) {
         cracked = true;
       }
     }
@@ -75,7 +73,7 @@ function crack_it(e) {
       break;
     }
   }
-  if(cracked == true) {
+  if((cracked == true) && (iter != 0)) {
   return new Promise(done => {
     browser.windows.create({
       url: "cracked.html?login=" + crackuser + "&password=" + wordbyline[iter],
@@ -85,9 +83,7 @@ function crack_it(e) {
     });
  stop_cracking();
   }
-  else {
-    console.log("Sorry, couldn't crack with this wordlist");
-  }
+    //console.log("Sorry, couldn't crack with this wordlist");
 }
 
 function cracking_request_listener(e) {
